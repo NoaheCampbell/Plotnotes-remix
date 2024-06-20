@@ -1,48 +1,68 @@
-import type { MetaFunction } from "@remix-run/node";
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
+import { useState } from 'react';
 
 export default function Index() {
+  const [prompt, setPrompt] = useState('');
+  const [response, setResponse] = useState('');
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const apiUrl = '/ollama'; // The Remix action route
+
+    try {
+      // Send the prompt as a POST request and get a streaming response
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        body: new URLSearchParams({ prompt }),
+        headers: {
+          'Accept': 'text/event-stream', // Indicate that we expect an event stream response
+        },
+      });
+
+      if (!res.body) {
+        throw new Error('No response body');
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      // Reset response
+      setResponse('');
+
+      const processStream = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          setResponse((prev) => prev + chunk);
+        }
+      };
+
+      processStream();
+
+    } catch (error) {
+      console.error('Error making request', error);
+      setResponse('An error occurred');
+    }
+  };
+
   return (
-    <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      <h1>Ollama Chat</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter your prompt"
+        />
+        <button type="submit">Submit</button>
+      </form>
+      {response && (
+        <div>
+          <h2>Response:</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{response}</pre>
+        </div>
+      )}
     </div>
   );
 }
