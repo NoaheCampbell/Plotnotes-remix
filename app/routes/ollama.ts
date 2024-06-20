@@ -4,6 +4,7 @@ import ollama from 'ollama';
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const prompt = formData.get('prompt');
+  console.log('Prompt received:', prompt);
   
   const stream = new ReadableStream({
     async start(controller) {
@@ -17,9 +18,11 @@ export const action: ActionFunction = async ({ request }) => {
       try {
         for await (const part of response) {
           const message = part.message.content;
-          controller.enqueue(encoder.encode(`${message}`));  // Event Stream format
+          console.log('Message part:', message);
+          controller.enqueue(encoder.encode(`${message}`));
         }
       } catch (error) {
+        console.error('Error in stream:', error);
         controller.error(error);
       } finally {
         controller.close();
