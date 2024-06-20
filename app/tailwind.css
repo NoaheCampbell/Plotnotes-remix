@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn {
+    @apply inline-flex h-10 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .btn-primary {
+    @apply bg-gray-900 text-white hover:bg-gray-600;
+  }
+  
+  .btn-secondary {
+    @apply border border-white bg-gray-800 text-white hover:bg-gray-700;
+  }

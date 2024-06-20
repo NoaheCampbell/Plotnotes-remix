@@ -1,13 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from '~/components/footer';
 import Header from '~/components/header';
 
 export default function Create() {
   const [prompt, setPrompt] = useState('');
   const [story, setStory] = useState('');
+  const [copyButtonText, setCopyButtonText] = useState('Copy Story');
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [loadingText, setLoadingText] = useState('Generating'); // Text for loading
+
+  useEffect(() => {
+    if (isLoading) {
+      const interval = setInterval(() => {
+        setLoadingText(prev => {
+          if (prev.endsWith('...')) return 'Generating';
+          return prev + '.';
+        });
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   const handleGenerateStory = async () => {
-    console.log('handleGenerateStory called');
+    setIsLoading(true); // Set loading state to true
     const apiUrl = '/ollama'; // The Remix action route
 
     try {
@@ -34,14 +49,26 @@ export default function Create() {
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
           setStory((prev) => prev + chunk);
-          console.log('Chunk:', chunk); // Add log here
         }
       };
 
-      processStream();
+      await processStream();
     } catch (error) {
       console.error('Error generating story:', error);
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(story).then(() => {
+      setCopyButtonText('Copied!');
+      setTimeout(() => {
+        setCopyButtonText('Copy Story');
+      }, 3000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
   };
 
   return (
@@ -58,22 +85,35 @@ export default function Create() {
           <textarea
             className="w-full p-4 mb-4 bg-gray-800 text-white rounded-md"
             rows={5}
+            cols={60}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter your story prompt here..."
+            style={{ resize: 'none', overflow: 'auto', height: '100px' }}
           />
           <button
             onClick={handleGenerateStory}
-            className="btn btn-primary"
+            className="btn btn-primary mb-4"
+            disabled={isLoading} // Disable button when loading
+            style={{ width: '150px' }}
           >
-            Generate Story
+            {isLoading ? loadingText : 'Generate'}
           </button>
-          {story && (
-            <div className="mt-8 p-4 bg-gray-800 text-white rounded-md">
-              <h2 className="text-2xl font-bold mb-4">Your Generated Story</h2>
-              <p>{story}</p>
-            </div>
-          )}
+          <textarea 
+            className="w-full p-4 mt-4 bg-gray-800 text-white rounded-md"
+            rows={10}
+            cols={60}
+            value={story}
+            readOnly
+            placeholder="Your story will appear here..."
+            style={{ resize: 'none', overflow: 'auto', height: '200px' }}
+          />
+          <button
+            onClick={handleCopy}
+            className="mt-2 btn btn-secondary"
+          >
+            {copyButtonText}
+          </button>
         </div>
       </main>
       <Footer />

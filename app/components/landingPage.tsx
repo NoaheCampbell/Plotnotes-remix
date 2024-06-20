@@ -21,12 +21,6 @@ export default function LandingPage() {
                   className="btn btn-primary"                  >
                   Get Started
                 </Link>
-                <Link
-                  to="#"
-                  className="btn btn-secondary"
-                >
-                  Learn More
-                </Link>
               </div>
             </div>
           </div>
