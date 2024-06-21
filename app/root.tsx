@@ -7,6 +7,13 @@ import {
 } from "@remix-run/react";
 import "./tailwind.css";
 
+// Add the link to the favicon in the links function
+export function links() {
+  return [
+    { rel: "icon", href: "/favicon.ico" }, 
+  ];
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
