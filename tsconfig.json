@@ -21,6 +21,6 @@
   },
   "include": [
     "app/**/*.ts",
-    "app/**/*.tsx",
+    "app/**/*.tsx", "app/services/session.server.js",
   ]
 }
