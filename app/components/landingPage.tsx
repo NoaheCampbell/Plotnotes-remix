@@ -1,5 +1,6 @@
-import { Link } from '@remix-run/react';
-import Footer from './footer';
+import { Link } from "@remix-run/react";
+import Footer from "./footer";
+import { useEffect } from "react";
 
 export default function LandingPage() {
   return (
@@ -16,9 +17,7 @@ export default function LandingPage() {
                 ideas to life.
               </p>
               <div className="flex justify-center gap-4">
-                <Link
-                  to="/create"
-                  className="btn btn-primary"                  >
+                <Link to="/create" className="btn btn-primary">
                   Get Started
                 </Link>
               </div>
@@ -38,10 +37,7 @@ export default function LandingPage() {
                   Brainstorm ideas, develop characters, and craft captivating plots with the assistance of our
                   intelligent writing partner.
                 </p>
-                <Link
-                  to="#"
-                  className="btn btn-primary"
-                >
+                <Link to="#" className="btn btn-primary">
                   Discover AI Storytelling
                 </Link>
               </div>
@@ -79,10 +75,7 @@ export default function LandingPage() {
                   family, or your writing group. Track changes, leave comments, and work together to craft the perfect
                   narrative.
                 </p>
-                <Link
-                  to="#"
-                  className="btn btn-primary"
-                >
+                <Link to="#" className="btn btn-primary">
                   Explore Collaborative Tools
                 </Link>
               </div>
@@ -102,10 +95,7 @@ export default function LandingPage() {
                   work. Export your manuscript, publish directly to popular platforms, or even self-publish your own
                   book.
                 </p>
-                <Link
-                  to="#"
-                  className="btn btn-primary"
-                >
+                <Link to="#" className="btn btn-primary">
                   Discover Publishing Tools
                 </Link>
               </div>

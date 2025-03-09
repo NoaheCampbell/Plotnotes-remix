@@ -1,17 +1,17 @@
 /** @type {import('@remix-run/dev').AppConfig} */
-module.exports = {
-    appDirectory: "app",
-    assetsBuildDirectory: "public/build",
-    future: {
-      /* any enabled future flags */
-    },
-    ignoredRouteFiles: ["**/*.css"],
-    publicPath: "/build/",
-    routes(defineRoutes) {
-      return defineRoutes((route) => {
-        route("api/user", "routes/api/user.ts");
-      });
-    },
-    serverBuildPath: "build/index.js",
-  };
+export const appDirectory = "app";
+export const assetsBuildDirectory = "public/build";
+export const future = {
+  /* any enabled future flags */
+};
+export const ignoredRouteFiles = ["**/*.css"];
+export const publicPath = "/build/";
+export function routes(defineRoutes)
+{
+  return defineRoutes((route) =>
+  {
+    route("api/user", "routes/api/user.ts");
+  });
+}
+export const serverBuildPath = "build/index.js";
   

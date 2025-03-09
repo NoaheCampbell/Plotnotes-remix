@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler", // Switch to 'bundler' for Vite compatibility
     "resolveJsonModule": true,
     "target": "ES2022",
     "strict": true,
@@ -21,6 +21,8 @@
   },
   "include": [
     "app/**/*.ts",
-    "app/**/*.tsx", "app/services/session.server.js",
+    "app/**/*.tsx",
+    "app/services/session.server.js",
+    "app/types/**/*.d.ts"
   ]
 }
