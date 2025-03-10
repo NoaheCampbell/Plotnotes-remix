@@ -1,4 +1,3 @@
-// app/lib/oauth-providers/google.ts
 import { OAuth2Client } from "google-auth-library";
 
 const oauthClient = new OAuth2Client({

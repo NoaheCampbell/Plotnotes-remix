@@ -1,4 +1,3 @@
-// app/models/user.server.ts
 import { query } from "~/utils/pool";
 import type { User } from "~/types";
 

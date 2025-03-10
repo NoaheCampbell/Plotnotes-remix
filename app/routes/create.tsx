@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react"; // Added useRef for AbortController
-import { useLoaderData, json, redirect } from "@remix-run/react";
+import { useState, useEffect, useRef } from "react";
+import { useLoaderData, json, redirect, Link } from "@remix-run/react";
 import { getSession } from "../services/session.server";
 import Footer from "~/components/footer";
 import Header from "~/components/header";
@@ -26,7 +26,7 @@ export default function Create() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Generating");
   const [showAlert, setShowAlert] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null); // Ref to store AbortController
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (isLoading) {
@@ -43,27 +43,21 @@ export default function Create() {
       return;
     }
     setIsLoading(true);
-    setStory(""); // Clear previous story
+    setStory("");
 
-    // Initialize AbortController
     abortControllerRef.current = new AbortController();
     const signal = abortControllerRef.current.signal;
 
-    // Use initialTerms from loader
     const terms = initialTerms;
 
-    // Process the prompt: inject term descriptions
     let modifiedPrompt = prompt;
-    console.log("Original prompt:", prompt);
     for (const term of terms) {
       const regex = new RegExp(`\\b${term.term}\\b`, "gi");
       if (regex.test(modifiedPrompt)) {
         const injection = `\n(Note: ${term.term} refers to: ${term.description})`;
         modifiedPrompt += injection;
-        console.log(`Injected term: ${term.term}, Description: ${term.description}, New prompt: ${modifiedPrompt}`);
       }
     }
-    console.log("Final modified prompt:", modifiedPrompt);
 
     try {
       const formData = new URLSearchParams();
@@ -75,7 +69,7 @@ export default function Create() {
         headers: {
           Accept: "text/event-stream",
         },
-        signal, // Pass the abort signal to the fetch request
+        signal,
       });
 
       if (!res.body) {
@@ -91,18 +85,17 @@ export default function Create() {
           if (done) break;
           if (signal.aborted) {
             setStory("Generation stopped by user.");
-            break; // Exit the loop if aborted
+            break;
           }
           const chunk = decoder.decode(value, { stream: true });
           setStory((prev) => prev + chunk);
         }
-        if (!signal.aborted) setIsLoading(false); // Only stop loading if not aborted
+        if (!signal.aborted) setIsLoading(false);
       };
 
       await processStream();
     } catch (error: unknown) {
       if (error instanceof Error && error.name === "AbortError") {
-        console.log("Generation aborted by user.");
         setStory("Generation stopped by user.");
       } else {
         console.error("Error generating story:", error);
@@ -110,15 +103,14 @@ export default function Create() {
       }
       setIsLoading(false);
     } finally {
-      abortControllerRef.current = null; // Clean up AbortController
+      abortControllerRef.current = null;
     }
   };
 
   const handleStopGeneration = () => {
     if (abortControllerRef.current) {
-      abortControllerRef.current.abort(); // Abort the fetch request
-      setIsLoading(false); // Immediately stop the loading state
-      console.log("Stop button clicked, aborting generation.");
+      abortControllerRef.current.abort();
+      setIsLoading(false);
     }
   };
 
@@ -170,12 +162,19 @@ export default function Create() {
             {isLoading && (
               <button
                 onClick={handleStopGeneration}
-                className="btn btn-danger"
+                className="btn btn-secondary"
                 style={{ width: "150px" }}
               >
                 Stop
               </button>
             )}
+            <Link
+              to="/terms"
+              className="btn btn-secondary"
+              style={{ width: "150px" }}
+            >
+              Manage Terms
+            </Link>
           </div>
           <textarea
             className="w-full p-4 mt-4 bg-gray-800 text-white rounded-md"
@@ -186,9 +185,11 @@ export default function Create() {
             placeholder="Your story will appear here..."
             style={{ resize: "none", overflow: "auto", height: "200px" }}
           />
-          <button onClick={handleCopy} className="mt-2 btn btn-secondary">
-            {copyButtonText}
-          </button>
+          <div className="mt-2">
+            <button onClick={handleCopy} className="btn btn-secondary">
+              {copyButtonText}
+            </button>
+          </div>
           {initialTerms && initialTerms.length > 0 && (
             <div className="mt-4">
               <h2 className="text-white text-2xl mb-2">Your Custom Terms</h2>

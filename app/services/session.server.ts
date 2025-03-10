@@ -1,7 +1,6 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 import { v4 as uuidv4 } from "uuid";
 
-// Ensure SESSION_SECRET is set in .env
 if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET must be set in .env");
 }
@@ -10,10 +9,10 @@ const { getSession, commitSession, destroySession } = createCookieSessionStorage
   cookie: {
     name: "__session",
     secrets: [process.env.SESSION_SECRET],
-    sameSite: "lax", // Prevents CSRF attacks
+    sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7, // 1 week
-    httpOnly: true, // Prevents client-side access to the cookie
+    httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Use secure cookies in production
   },
 });

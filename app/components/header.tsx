@@ -40,11 +40,18 @@ export default function Header({ user }: { user: User | null }) {
                   Manage Terms
                 </Link>
                 <Link
-                  to="/prompt"
+                  to="/create"
                   className="block px-4 py-2 text-white hover:bg-gray-600"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  Generate with Ollama
+                  Create Story
+                </Link>
+                <Link
+                  to="/stories"
+                  className="block px-4 py-2 text-white hover:bg-gray-600"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  View Stories
                 </Link>
                 <Form action="/logout" method="post" onSubmit={() => setDropdownOpen(false)}>
                   <button type="submit" className="w-full text-left px-4 py-2 text-white hover:bg-gray-600">

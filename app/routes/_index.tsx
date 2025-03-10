@@ -17,20 +17,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-700 flex flex-col">
       <Header user={user} />
-      <div className="flex-grow">
-        {user ? (
-          <div className="p-4 text-center">
-            <p className="text-white text-lg">
-              You are signed in as {user.email}!
-            </p>
-          </div>
-        ) : (
-          <div className="p-4 text-center">
-            <p className="text-white text-lg">You are signed out</p>
-          </div>
-        )}
-        <LandingPage />
-      </div>
+      <LandingPage />
     </div>
   );
 }
