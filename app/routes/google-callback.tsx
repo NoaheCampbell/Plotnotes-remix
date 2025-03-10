@@ -1,19 +1,16 @@
-// app/routes/google-callback.tsx
 import { type LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { getTokenFromCode } from "~/lib/oauth-providers/google";
 import { UserModel } from "../models/user.server";
-import { commitSession, getSession } from "~/services/session.server";
+import { createSession, commitSession, trackSessionAccess } from "~/services/session.server";
 import type { User } from "~/types";
-import Header from "../components/header";
+import Header from "~/components/header"; // Updated to lowercase
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
-    console.log("Processing Google OAuth callback...");
     const searchParams = new URL(request.url).searchParams;
     const code = searchParams.get("code");
     const state = searchParams.get("state");
 
-    console.log("Callback Query Params:", { code, state });
 
     if (!code || !state) {
       console.error("Missing code or state in callback URL");
@@ -21,21 +18,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     const userData = await getTokenFromCode(code);
-    console.log("User Data from Google:", userData);
-
-    // Debug before passing to UserModel
-    console.log("Passing to UserModel.findOrCreate:", {
-      email: userData.email!,
-      name: userData.name!,
-      googleId: userData.googleId!,
-      picture: userData.picture,
-    });
 
     const userFromModel = await UserModel.findOrCreate({
       email: userData.email!,
       name: userData.name!,
       googleId: userData.googleId!,
-      picture: userData.picture, // Ensure this matches the log
+      picture: userData.picture,
     });
 
     const user: User = {
@@ -43,16 +31,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
       email: userFromModel.email,
       name: userFromModel.name,
       googleId: userFromModel.googleId,
-      picture: userFromModel.picture || userData.picture, // Fallback to userData.picture
+      picture: userFromModel.picture || userData.picture,
     };
 
-    console.log("Authenticated User with Picture:", user);
-
-    const session = await getSession(request.headers.get("Cookie"));
+    const session = await createSession(request);
     session.set("user", user);
 
     const sessionCookie = await commitSession(session);
-    console.log("Session Cookie:", sessionCookie);
 
     return redirect(state || "/", {
       headers: {

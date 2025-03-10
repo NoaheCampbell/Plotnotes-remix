@@ -1,4 +1,3 @@
-// app/components/Header.tsx
 import { useState } from "react";
 import { Link, Form } from "@remix-run/react";
 import type { User } from "~/types";
@@ -22,16 +21,31 @@ export default function Header({ user }: { user: User | null }) {
         {user ? (
           <div className="relative">
             <img
-              src={user.picture || "https://via.placeholder.com/40"} // Fallback image
+              src={user.picture || "https://via.placeholder.com/40"}
               alt="Profile"
               className="h-10 w-10 rounded-full cursor-pointer border-2 border-gray-600"
               onClick={toggleDropdown}
+              onError={(e) => console.log("Image load error:", e)}
             />
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg z-10">
                 <div className="px-4 py-2 text-white border-b border-gray-600">
                   {user.name || "Unknown User"}
                 </div>
+                <Link
+                  to="/terms"
+                  className="block px-4 py-2 text-white hover:bg-gray-600"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Manage Terms
+                </Link>
+                <Link
+                  to="/prompt"
+                  className="block px-4 py-2 text-white hover:bg-gray-600"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Generate with Ollama
+                </Link>
                 <Form action="/logout" method="post" onSubmit={() => setDropdownOpen(false)}>
                   <button type="submit" className="w-full text-left px-4 py-2 text-white hover:bg-gray-600">
                     Logout

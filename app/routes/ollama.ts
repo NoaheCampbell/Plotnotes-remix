@@ -36,7 +36,6 @@ export const action: ActionFunction = async ({ request }) => {
         controller.error(error);
       } finally {
         controller.close();
-        console.log("Story:", story);
         await query(
           "INSERT INTO stories (userid, story, storyname) VALUES ($1, $2, $3)",
           [user.id, story, "TempName"]

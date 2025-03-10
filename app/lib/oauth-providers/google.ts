@@ -30,8 +30,6 @@ export const getTokenFromCode = async (code: string) => {
     throw new Error("Failed to retrieve user profile.");
   }
 
-  console.log("ID Token Payload:", idTokenBody);
-
   return {
     email: idTokenBody.email!,
     name: idTokenBody.name || idTokenBody.given_name || idTokenBody.family_name || "Unknown User",

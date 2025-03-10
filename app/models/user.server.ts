@@ -5,8 +5,6 @@ import type { User } from "~/types";
 export class UserModel {
   static async findOrCreate({ email, name, googleId, picture }: { email: string; name: string; googleId: string; picture?: string }): Promise<User> {
     try {
-      console.log("Input to findOrCreate:", { email, name, googleId, picture });
-
       const result = await query(
         "SELECT * FROM users WHERE email = $1",
         [email]
@@ -21,7 +19,6 @@ export class UserModel {
           googleId: row.google_id,
           picture: row.picture,
         };
-        console.log("Existing user from DB (mapped):", mappedUser);
         return mappedUser;
       }
 
@@ -38,7 +35,6 @@ export class UserModel {
         googleId: insertedRow.google_id,
         picture: insertedRow.picture,
       };
-      console.log("Inserted user from DB (mapped):", mappedInsertedUser);
       return mappedInsertedUser;
     } catch (error) {
       console.error("Database error in findOrCreate:", error);
