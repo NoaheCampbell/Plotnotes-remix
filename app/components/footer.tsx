@@ -8,7 +8,7 @@ export default function Footer() {
         <Link to="#" className="text-xs hover:underline underline-offset-4">
           Terms of Service
         </Link>
-        <Link to="#" className="text-xs hover:underline underline-offset-4">
+        <Link to="/privacy-policy" className="text-xs hover:underline underline-offset-4">
           Privacy
         </Link>
       </nav>
