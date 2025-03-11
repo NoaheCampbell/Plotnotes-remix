@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
         <div className="max-w-3xl mx-auto text-left text-white p-4">
           <h1 className="text-4xl font-bold tracking-tighter mb-8">Privacy Policy</h1>
           <p className="text-gray-300 mb-4">
-            Last updated: March 10, 2025
+            Last updated: March 11, 2025
           </p>
           <section className="mb-6">
             <h2 className="text-2xl font-semibold mb-2">Introduction</h2>
@@ -100,7 +100,7 @@ export default function PrivacyPolicy() {
           <section className="mb-6">
             <h2 className="text-2xl font-semibold mb-2">Contact Us</h2>
             <p className="text-gray-300">
-              If you have any questions about this Privacy Policy, please contact us at [insert contact email].
+              If you have any questions about this Privacy Policy, please contact us at plotnoted@gmail.com.
             </p>
           </section>
           <div className="mt-8">
