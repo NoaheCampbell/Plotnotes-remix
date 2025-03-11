@@ -10,7 +10,6 @@ export const generateAuthUrl = (state: string) => {
   return oauthClient.generateAuthUrl({
     scope: ["openid", "email", "profile", "https://www.googleapis.com/auth/userinfo.profile"],
     state,
-    access_type: "offline",
   });
 };
 

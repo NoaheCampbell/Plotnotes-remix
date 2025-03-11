@@ -1,22 +1,22 @@
 import pg from 'pg';
+// require('dotenv').config();
 
 const { Pool } = pg;
 
-const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+let pool;
 
-if (!connectionString) {
-  throw new Error("No database connection string provided. Please set POSTGRES_URL or DATABASE_URL.");
+if (process.env.NODE_ENV == 'development') {
+    pool = new Pool
+    ({
+        connectionString: process.env.DATABASE_URL,
+    });
+} else {
+    pool = new Pool({
+        connectionString: process.env.SUPABASE_URL,
+    })
 }
-
-const pool = new Pool({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false, // Disable strict host verification (less secure but works for testing)
-  },
-});
-
+console.log('pool', pool);
 export async function query(text, params) {
-  return pool.query(text, params);
+    // use the existing pool for queries
+    return pool.query(text, params);
 }
-
-export default pool;
