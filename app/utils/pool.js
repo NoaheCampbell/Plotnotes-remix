@@ -12,7 +12,7 @@ if (process.env.NODE_ENV == 'development') {
     });
 } else {
     pool = new Pool({
-        connectionString: process.env.SUPABASE_URL,
+        connectionString: process.env.POSTGRES_URL,
     })
 }
 console.log('pool', pool);
